@@ -24,6 +24,7 @@ mvn spring-boot:run
 
 ## Verify
 Health: http://localhost:8080/actuator/health should return "UP"
+
 Swagger UI: http://localhost:8080/swagger-ui.html for API docs and testing
 
 
