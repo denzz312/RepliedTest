@@ -1,18 +1,16 @@
 package org.example.repliedtest.support;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Component;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class Neo4jSchemaInit implements CommandLineRunner {
     private final Neo4jClient neo4j;
-
-    public Neo4jSchemaInit(Neo4jClient neo4j) {
-        this.neo4j = neo4j;
-    }
 
     @Override
     public void run(String... args) {
