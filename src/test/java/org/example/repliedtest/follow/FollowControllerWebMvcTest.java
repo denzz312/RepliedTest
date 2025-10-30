@@ -1,6 +1,5 @@
 package org.example.repliedtest.follow;
 
-import org.example.repliedtest.follow.dto.FollowController;
 import org.example.repliedtest.support.ApiExceptionHandler;
 import org.example.repliedtest.support.ApiExceptions;
 import org.junit.jupiter.api.Test;

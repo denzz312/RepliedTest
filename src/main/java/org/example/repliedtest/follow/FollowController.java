@@ -1,7 +1,7 @@
-package org.example.repliedtest.follow.dto;
+package org.example.repliedtest.follow;
 
 import lombok.RequiredArgsConstructor;
-import org.example.repliedtest.follow.FollowService;
+import org.example.repliedtest.follow.dto.FollowRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
