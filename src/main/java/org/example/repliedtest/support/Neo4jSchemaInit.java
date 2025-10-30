@@ -16,8 +16,8 @@ public class Neo4jSchemaInit implements CommandLineRunner {
     public void run(String... args) {
         try {
             create("CREATE CONSTRAINT user_id IF NOT EXISTS FOR (u:User) REQUIRE u.id IS UNIQUE");
-            create("CREATE CONSTRAINT user_handle IF NOT EXISTS FOR (u:User) REQUIRE u.handle IS UNIQUE");
-            log.info("Neo4j schema constraints ensured (user_id, user_handle).");
+            create("CREATE CONSTRAINT user_username IF NOT EXISTS FOR (u:User) REQUIRE u.username IS UNIQUE");
+            log.info("Neo4j schema constraints ensured (user_id, user_username).");
         } catch (Exception e) {
             // Don’t kill the app if DB is not reachable
             log.error("Skipping Neo4j schema init (DB not reachable): {}", e.getMessage());
