@@ -41,29 +41,29 @@ class SchemaConstraintsIT {
     void constraintsExist_afterStartup() {
         var row = neo.query("""
         SHOW CONSTRAINTS YIELD name
-        WHERE name IN ['user_id','user_handle']
+        WHERE name IN ['user_id','user_username']
         RETURN collect(name) AS names
       """).fetch().one().orElseThrow();
 
         @SuppressWarnings("unchecked")
         List<String> names = (List<String>) row.get("names");
-        Assertions.assertTrue(names.containsAll(List.of("user_id","user_handle")),
-                "Expected constraints user_id and user_handle to exist");
+        Assertions.assertTrue(names.containsAll(List.of("user_id","user_username")),
+                "Expected constraints user_id and user_username to exist");
     }
 
     @Test
-    void duplicateHandle_isRejected() {
-        // First insert with handle 'same' succeeds
-        neo.query("CREATE (:User {id:$id1, handle:$h})")
+    void duplicateusername_isRejected() {
+        // First insert with username 'same' succeeds
+        neo.query("CREATE (:User {id:$id1, username:$h})")
                 .bindAll(Map.of("id1","u1","h","same"))
                 .run();
 
-        // Second insert with the same handle should violate unique constraint
-        Executable secondInsert = () -> neo.query("CREATE (:User {id:$id2, handle:$h})")
+        // Second insert with the same username should violate unique constraint
+        Executable secondInsert = () -> neo.query("CREATE (:User {id:$id2, username:$h})")
                 .bindAll(Map.of("id2","u2","h","same"))
                 .run();
 
         Assertions.assertThrows(RuntimeException.class, secondInsert,
-                "Expected a unique constraint violation on User.handle");
+                "Expected a unique constraint violation on User.username");
     }
 }
