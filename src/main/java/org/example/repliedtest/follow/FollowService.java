@@ -95,5 +95,41 @@ public class FollowService {
                 .mappedBy((t, r) -> r.get("id").asString())
                 .all();
     }
+
+    @Transactional
+    public void acceptFollowRequest(String toId, String fromId) {
+        // noly proceed if a pending request exists
+        var updated = neo.query("""
+      MATCH (t:User {id:$to})<-[r:FOLLOW_REQUEST]-(f:User {id:$from})
+      MERGE (f)-[:FOLLOWS]->(t)
+      DELETE r
+      RETURN 1 AS updated
+      """)
+                .bind(toId).to("to")
+                .bind(fromId).to("from")
+                .fetchAs(Integer.class)
+                .one();
+
+        if (updated.isEmpty()) {
+            throw new ApiExceptions.NotFound("no pending follow request");
+        }
+    }
+
+    @Transactional
+    public void denyFollowRequest(String toId, String fromId) {
+        var updated = neo.query("""
+      MATCH (t:User {id:$to})<-[r:FOLLOW_REQUEST]-(f:User {id:$from})
+      DELETE r
+      RETURN 1 AS updated
+      """)
+                .bind(toId).to("to")
+                .bind(fromId).to("from")
+                .fetchAs(Integer.class)
+                .one();
+
+        if (updated.isEmpty()) {
+            throw new ApiExceptions.NotFound("no pending follow request");
+        }
+    }
 }
 
