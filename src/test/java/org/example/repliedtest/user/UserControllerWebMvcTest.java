@@ -22,14 +22,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerWebMvcTest {
 
     @Autowired MockMvc mvc;
-    @MockBean UserService service;
+    @MockBean UserService userService;
+    @MockBean BlockService blockService; // not used, but needed to construct UserController
 
     @Test
     void create_user_happy_path_201() throws Exception {
         var saved = UserNode.builder()
                 .id("u-1").username("alice").birthdate("1990-05-10").build();
 
-        Mockito.when(service.createUser("alice")).thenReturn(saved);
+        Mockito.when(userService.createUser("alice")).thenReturn(saved);
 
         mvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -44,7 +45,7 @@ class UserControllerWebMvcTest {
 
     @Test
     void create_user_duplicate_username_400() throws Exception {
-        Mockito.when(service.createUser("alice"))
+        Mockito.when(userService.createUser("alice"))
                 .thenThrow(new ApiExceptions.BadRequest("username already taken"));
 
         mvc.perform(post("/users")
@@ -60,7 +61,7 @@ class UserControllerWebMvcTest {
 
     @Test
     void get_user_404_when_missing() throws Exception {
-        Mockito.when(service.getVisibleUser(eq("u-404"), any()))
+        Mockito.when(userService.getVisibleUser(eq("u-404"), any()))
                 .thenThrow(new ApiExceptions.NotFound("user not found: u-404"));
 
         mvc.perform(get("/users/u-404").accept(MediaType.APPLICATION_JSON))

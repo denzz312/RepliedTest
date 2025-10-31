@@ -1,6 +1,7 @@
 package org.example.repliedtest.user;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +20,7 @@ import java.net.URI;
 public class UserController {
 
     private final UserService service;
+    private final BlockService blockService;
 
     @Operation(summary = "Create user",
             description = "Optional unique username; returns created user with random birthdate.")
@@ -56,5 +58,31 @@ public class UserController {
                 .username(u.getUsername())
                 .birthdate(u.getBirthdate())
                 .build());
+    }
+
+    @Operation(summary = "Block user",
+            description = "Creates BLOCKS(userId -> targetId) and removes any FOLLOWS/FOLLOW_REQUEST in both directions.")
+    @ApiResponse(responseCode = "204", description = "No Content (blocked & cleaned)")
+    @ApiResponse(responseCode = "400", description = "Bad Request (self-block)")
+    @ApiResponse(responseCode = "404", description = "Not Found (unknown userId/targetId)")
+    @PostMapping("/{userId}/block/{targetId}")
+    public ResponseEntity<Void> block(
+            @Parameter(description = "Blocking user id") @PathVariable String userId,
+            @Parameter(description = "Target to be blocked") @PathVariable String targetId) {
+        blockService.block(userId, targetId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Unblock user",
+            description = "Removes BLOCKS(userId→targetId). Idempotent if already unblocked.")
+    @ApiResponse(responseCode = "204", description = "No Content (unblocked or already not blocked)")
+    @ApiResponse(responseCode = "400", description = "Bad Request (self-unblock)")
+    @ApiResponse(responseCode = "404", description = "Not Found (unknown userId/targetId)")
+    @DeleteMapping("/{userId}/block/{targetId}")
+    public ResponseEntity<Void> unblock(
+            @Parameter(description = "Blocking user id") @PathVariable String userId,
+            @Parameter(description = "Target to be unblocked") @PathVariable String targetId) {
+        blockService.unblock(userId, targetId);
+        return ResponseEntity.noContent().build();
     }
 }
