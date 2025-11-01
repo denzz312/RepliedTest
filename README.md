@@ -12,6 +12,7 @@ git clone <repo>
 cd <repo>
 ```
 ## Start Neo4j (docker-compose already present)
+Important: Neo4j needs to be running before building/starting the application.
 ```bash
 docker compose up -d
 ```
@@ -23,7 +24,10 @@ mvn spring-boot:run
 ```
 
 ## Verify
-Health: http://localhost:8080/actuator/health should return "UP"
-Swagger UI: http://localhost:8080/swagger-ui.html for API docs and testing
+- Health: http://localhost:8080/actuator/health should return "UP"
+- Swagger UI: http://localhost:8080/swagger-ui.html for API docs and testing
+
+## Test Data
+Some test data is auto-injected on startup for convenience. The UUIDs are assigned as U1..UX for ease of testing. When creating new entities via the API, real UUIDs will be generated.
 
 
